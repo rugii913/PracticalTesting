@@ -78,6 +78,20 @@ class CafeKioskTest {
         assertThat(cafeKiosk.getBeverages()).isEmpty();
     }
 
+    @Test
+    void calculateTotalPrice() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+        Latte latte = new Latte();
+
+        cafeKiosk.add(americano);
+        cafeKiosk.add(latte);
+
+        int totalPrice = cafeKiosk.calculateTotalPrice();
+
+        assertThat(totalPrice).isEqualTo(8500);
+    }
+
     // cafeKiosk.createOrder()에서 LocalDateTime.now()를 사용하고 있기 때문에 테스트하는 시간에 영향을 받는 테스트가 되어버렸다.
     // → 우선 테스트하기 어려운 영역을 구분할 줄 아는 눈이 있어야 함
     @Test
