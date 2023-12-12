@@ -3,6 +3,7 @@ package sample.cafekiosk.unit;
 import sample.cafekiosk.unit.beverage.Americano;
 import sample.cafekiosk.unit.beverage.Latte;
 
+// 메인 함수 역할 - CafeKiosk를 호출
 public class CafeKioskRunner {
 
     public static void main(String[] args) {
