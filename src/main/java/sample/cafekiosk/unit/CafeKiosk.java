@@ -60,4 +60,14 @@ public class CafeKiosk {
 
         return new Order(currentDateTime, beverages);
     }
+
+    // 값을 외부로 분리하여 테스트할 수 있게 만들었다.
+    public Order createOrder(LocalDateTime currentDateTime) {
+        LocalTime currentTime = currentDateTime.toLocalTime();
+        if (currentTime.isBefore(SHOP_OPEN_TIME) || currentTime.isAfter(SHOP_CLOSE_TIME)) {
+            throw new IllegalArgumentException("주문 시간이 아닙니다. 관리자에게 문의하세요.");
+        }
+
+        return new Order(currentDateTime, beverages);
+    }
 }

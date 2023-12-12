@@ -5,6 +5,8 @@ import sample.cafekiosk.unit.beverage.Americano;
 import sample.cafekiosk.unit.beverage.Latte;
 import sample.cafekiosk.unit.order.Order;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -76,8 +78,10 @@ class CafeKioskTest {
         assertThat(cafeKiosk.getBeverages()).isEmpty();
     }
 
+    // cafeKiosk.createOrder()에서 LocalDateTime.now()를 사용하고 있기 때문에 테스트하는 시간에 영향을 받는 테스트가 되어버렸다.
+    // → 우선 테스트하기 어려운 영역을 구분할 줄 아는 눈이 있어야 함
     @Test
-    void createOrder() { // cafeKiosk.createOrder()에서 LocalDateTime.now()를 사용하고 있기 때문에 테스트하는 시간에 영향을 받는 테스트가 되어버렸다.
+    void createOrder() { 
         CafeKiosk cafeKiosk = new CafeKiosk();
         Americano americano = new Americano();
 
@@ -87,5 +91,30 @@ class CafeKioskTest {
 
         assertThat(order.getBeverages()).hasSize(1);
         assertThat(order.getBeverages().get(0).getName()).isEqualTo("아메리카노");
+    }
+
+    @Test
+    void createOrderWithCurrentTime() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+
+        cafeKiosk.add(americano);
+
+        Order order = cafeKiosk.createOrder(LocalDateTime.of(2023, 12, 12, 10, 0));
+
+        assertThat(order.getBeverages()).hasSize(1);
+        assertThat(order.getBeverages().get(0).getName()).isEqualTo("아메리카노");
+    }
+
+    @Test
+    void createOrderOutsideOpenTime() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+
+        cafeKiosk.add(americano);
+
+        assertThatThrownBy(() -> cafeKiosk.createOrder(LocalDateTime.of(2023, 12, 12, 9, 59)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 시간이 아닙니다. 관리자에게 문의하세요.");
     }
 }
