@@ -1,5 +1,6 @@
 package sample.cafekiosk.unit;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import sample.cafekiosk.unit.beverage.Americano;
 import sample.cafekiosk.unit.beverage.Latte;
@@ -21,6 +22,10 @@ class CafeKioskTest {
         System.out.println(">>> 담긴 음료: " + cafeKiosk.getBeverages().get(0).getName());
     }
     
+
+    @DisplayName("음료 1개를 추가하면 주문 목록에 담긴다.")
+    // @DisplayName("음료 1개를 추가할 수 있다.")
+    // @DisplayName("음료 1개 추가 테스트")
     @Test
     void add() { // 자동 테스트 (검증하는 것: 담긴 움료수의 개수, 담긴 음료수의 이름)
         CafeKiosk cafeKiosk = new CafeKiosk();
@@ -120,6 +125,8 @@ class CafeKioskTest {
         assertThat(order.getBeverages().get(0).getName()).isEqualTo("아메리카노");
     }
 
+    @DisplayName("영업 시작 시간 이전에는 주문을 생성할 수 없다.")
+    // @DisplayName("특정 시간 이전에 주문을 생성하면 실패한다.")
     @Test
     void createOrderOutsideOpenTime() {
         CafeKiosk cafeKiosk = new CafeKiosk();
