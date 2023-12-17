@@ -34,13 +34,14 @@ public class Order extends BaseEntity {
     // cascade로 생명주기 설정(일단 all로 설정 -> order에 변화가 있으면 orderProduct도 항상 그에 맞춰 작업하도록
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
-    public Order(List<Product> products) {
+    public Order(List<Product> products, LocalDateTime registeredDateTime) {
         this.orderStatus = OrderStatus.INIT;
         this.totalPrice = calculateTotalPrice(products);
+        this.registeredDateTime = registeredDateTime;
     }
 
-    public static Order create(List<Product> products) { // static 메서드, 밖에서 생성할 때는 생성자 대신 이 static 메서드를 사용
-        return new Order(products);
+    public static Order create(List<Product> products, LocalDateTime registeredDateTime) { // static 메서드, 밖에서 생성할 때는 생성자 대신 이 static 메서드를 사용
+        return new Order(products, registeredDateTime);
     }
 
     private int calculateTotalPrice(List<Product> products) {
