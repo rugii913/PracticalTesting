@@ -15,4 +15,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * // 위와 같은 쿼리가 나가길 기대하고 작성한 쿼리 메서드
      */
     List<Product> findAllBySellingStatusIn(List<ProductSellingStatus> sellingStatuses);
+
+    List<Product> findAllByProductNumberIn(List<String> productNumbers);
 }
