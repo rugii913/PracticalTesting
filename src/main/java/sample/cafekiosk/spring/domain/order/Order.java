@@ -36,7 +36,9 @@ public class Order extends BaseEntity {
 
     public Order(List<Product> products) {
         this.orderStatus = OrderStatus.INIT;
-        this.totalPrice = 0; // 작성 중
+        this.totalPrice = products.stream()
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
     public static Order create(List<Product> products) { // static 메서드, 밖에서 생성할 때는 생성자 대신 이 static 메서드를 사용
