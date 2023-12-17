@@ -29,6 +29,22 @@ class OrderTest { // Order 객체에 대한 단위 테스트
         assertThat(order.getTotalPrice()).isEqualTo(3000);
     }
 
+    @DisplayName("주문 생성 시 주문 상태는 INIT이다.")
+    @Test
+    void init() {
+        // given
+        List<Product> products = List.of(
+                createProduct("001", 1000),
+                createProduct("002", 2000)
+        );
+
+        // when
+        Order order = Order.create(products);
+
+        // then
+        assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.INIT); // enum의 경우 isEqualTo 외에 isEqualByComparingTo 사용 가능 - 객체 자체 비교
+    }
+
     private Product createProduct(String productNumber, int price) { // OrderServiceTest에 만들어 놓은 것 복붙 후 필요한 부분 수정해서 사용
         return Product.builder()
                 .type(ProductType.HANDMADE)
