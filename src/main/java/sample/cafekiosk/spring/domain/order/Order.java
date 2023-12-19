@@ -33,6 +33,9 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     // mappedBy 연관 관계의 주인인 엔티티의 해당 필드명 - 여기서는 주인이 orderProduct이다.
     // cascade로 생명주기 설정(일단 all로 설정 -> order에 변화가 있으면 orderProduct도 항상 그에 맞춰 작업하도록
+    // (아마도) → Product는 처음 주어진 상태로 거의 변화가 없고, Order 데이터 들어와서 DB에 저장될 때, 이에 맞춰서 OrderProduct 데이터도 함께 생성됨
+    // order.http POST 요청 날려서 확인해보면 OrderService의 createOrder에서는 orderRepository만 호출하고 있는데,
+    // 실제 쿼리 가는 것을 보면 order_product에도 insert 쿼리가 날아가는 것을 확인할 수 있음
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     public Order(List<Product> products, LocalDateTime registeredDateTime) {
