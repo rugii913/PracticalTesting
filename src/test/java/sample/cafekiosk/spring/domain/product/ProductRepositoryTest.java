@@ -16,6 +16,9 @@ import static sample.cafekiosk.spring.domain.product.ProductType.HANDMADE;
 @ActiveProfiles("test") // 테스트할 때는 Spring 실행 구성에서 이 profile을 사용하도록 한다
 // @SpringBootTest // 테스트할 때 Spring 띄워서 테스트
 @DataJpaTest // 마찬가지로 Spring 띄우지만, JPA 관련된 빈들만 주입하므로 가볍다 // 하지만 단점이 있는데 그건 나중에 설명
+// 여기서는 왜 오염된 데이터로 인한 테스트 실패가 발생하지 않았는가? rollback 때문 - 왜? @DataJpaTest는 @Transactional을 갖고 있다.
+    // → 이 부분이 @SpringBootTest와 @DataJpaTest의 가장 큰 차이점이다
+    // 왜 OrderServiceTest에는 @Transactional을 안 붙이고, 데이터 클렌징 작업 메서드를 사용했는가? - 문제점은 다음에 설명
 class ProductRepositoryTest {
 
     @Autowired
