@@ -1,11 +1,11 @@
 package sample.cafekiosk.spring.api.service.order;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 import sample.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
 import sample.cafekiosk.spring.api.service.order.response.OrderResponse;
 import sample.cafekiosk.spring.domain.order.OrderRepository;
@@ -24,7 +24,7 @@ import static sample.cafekiosk.spring.domain.product.ProductSellingStatus.SELLIN
 import static sample.cafekiosk.spring.domain.product.ProductType.*;
 
 @ActiveProfiles("test")
-@Transactional
+//@Transactional
 @SpringBootTest
 class OrderServiceTest {
 
@@ -43,13 +43,14 @@ class OrderServiceTest {
     @Autowired
     private OrderService orderService; // 테스트 하고자 하는 orderService를 주입받는다. // 테스트에서는 그냥 필드 주입
 
-    /*@AfterEach
+    @AfterEach
     void tearDown() {
         // deleteAll(), deleteAllInBatch() 두 메서드 차이점은 나중에 다룬다.
         orderProductRepository.deleteAllInBatch();
         productRepository.deleteAllInBatch();
         orderRepository.deleteAllInBatch();
-    }*/
+        stockRepository.deleteAllInBatch();
+    }
 
     @DisplayName("주문번호 리스트를 받아 주문을 생성한다.")
     @Test
