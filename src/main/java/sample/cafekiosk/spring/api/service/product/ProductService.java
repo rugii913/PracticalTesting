@@ -31,14 +31,7 @@ public class ProductService {
         Product product = request.toEntity(nextProductNumber);
         Product savedProduct = productRepository.save(product);
 
-        return ProductResponse.builder()
-                .id(savedProduct.getId())
-                .productNumber(nextProductNumber)
-                .type(request.getType())
-                .sellingStatus(request.getSellingStatus())
-                .name(request.getName())
-                .price(request.getPrice())
-                .build();
+        return ProductResponse.of(savedProduct);
     }
 
     private String createNextProductNumber() {
