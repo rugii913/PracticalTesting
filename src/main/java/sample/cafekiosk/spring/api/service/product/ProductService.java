@@ -11,6 +11,9 @@ import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static sample.cafekiosk.spring.domain.product.ProductSellingStatus.SELLING;
+import static sample.cafekiosk.spring.domain.product.ProductType.HANDMADE;
+
 @RequiredArgsConstructor
 @Service
 public class ProductService {
@@ -22,7 +25,12 @@ public class ProductService {
         // DB에서 마지막 저장된 Product의 상품 번호를 읽어와서 + 1 (ex.)009 → 010
         String latestProductNumber = productRepository.findLatestProductNumber();
 
-        return null;
+        return ProductResponse.builder()
+                .type(HANDMADE)
+                .sellingStatus(SELLING)
+                .name("카푸치노")
+                .price(5000)
+                .build();
     }
 
     public List<ProductResponse> getSellingProducts() {
