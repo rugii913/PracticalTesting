@@ -17,10 +17,12 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public void createProduct(ProductCreateRequest request) {
+    public ProductResponse createProduct(ProductCreateRequest request) {
         // productNumber 부여
         // DB에서 마지막 저장된 Product의 상품 번호를 읽어와서 + 1 (ex.)009 → 010
         String latestProductNumber = productRepository.findLatestProductNumber();
+
+        return null;
     }
 
     public List<ProductResponse> getSellingProducts() {
