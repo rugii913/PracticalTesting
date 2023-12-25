@@ -28,7 +28,11 @@ public class ProductService {
         // DB에서 마지막 저장된 Product의 상품 번호를 읽어와서 + 1 (ex.)009 → 010
         String nextProductNumber = createNextProductNumber();
 
+        Product product = request.toEntity(nextProductNumber);
+        Product savedProduct = productRepository.save(product);
+
         return ProductResponse.builder()
+                .id(savedProduct.getId())
                 .productNumber(nextProductNumber)
                 .type(request.getType())
                 .sellingStatus(request.getSellingStatus())
