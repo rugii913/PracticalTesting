@@ -1,7 +1,9 @@
 package sample.cafekiosk.spring.api;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class ApiResponse<T> {
 
     private int code; // HttpStatus의 값
