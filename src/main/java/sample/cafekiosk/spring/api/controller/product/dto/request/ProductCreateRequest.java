@@ -2,11 +2,13 @@ package sample.cafekiosk.spring.api.controller.product.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.domain.product.ProductType;
 
 @Getter
+@NoArgsConstructor // JSON String을 이 타입 객체로 매핑(역직렬화)할 때 ObjectMapper가 기본 생성자를 사용함
 public class ProductCreateRequest {
 
     private ProductType type;
