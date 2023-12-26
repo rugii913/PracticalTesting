@@ -9,6 +9,7 @@ import sample.cafekiosk.spring.api.controller.product.dto.request.ProductCreateR
 import sample.cafekiosk.spring.api.service.product.ProductService;
 import sample.cafekiosk.spring.api.service.product.response.ProductResponse;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/api/v1/products/new")
-    public void createProduct(@RequestBody ProductCreateRequest request) {
+    public void createProduct(@Valid @RequestBody ProductCreateRequest request) {
         productService.createProduct(request);
     }
 
