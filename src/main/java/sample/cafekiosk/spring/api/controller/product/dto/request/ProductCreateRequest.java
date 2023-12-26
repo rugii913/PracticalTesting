@@ -15,16 +15,17 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor // JSON String을 이 타입 객체로 매핑(역직렬화)할 때 ObjectMapper가 기본 생성자를 사용함
 public class ProductCreateRequest {
 
-    @NotNull
+    @NotNull(message = "상품 타입은 필수입니다.")
+    // bean validation 어노테이션에서 message 속성을 사용해서 메시지도 함께 던지기 - 클라이언트 단에 보내주고 싶은 메시지
     private ProductType type;
 
-    @NotNull
+    @NotNull(message = "상품 판매상태는 필수입니다.")
     private ProductSellingStatus sellingStatus;
 
-    @NotBlank
+    @NotBlank(message = "상품 이름은 필수입니다.")
     private String name;
 
-    @Positive
+    @Positive(message = "상품 가격은 양수여야 합니다.")
     private int price;
 
     @Builder
