@@ -9,11 +9,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import sample.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import sample.cafekiosk.spring.api.service.product.ProductService;
 import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.domain.product.ProductType;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = ProductController.class)
 public class ProductControllerTest {
@@ -46,11 +51,13 @@ public class ProductControllerTest {
         // - post는 http body에 데이터를 넣으므로 직렬화, 역직렬화 과정을 거쳐야 함
         // --- 위 request 객체를 JSON으로 직렬화(byte 배열 형태 혹은 String 형태로)
         // --- 직렬화하기 위해 ObjectMapper의 도움을 받음
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products/new")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(
+                        post("/api/v1/products/new")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
 // cf. 아래의 JPA 관련 에러 발생할 경우 - app 메인의 @EnableJpaAuditing 어노테이션 때문임 → config 분리해주면 된다.
