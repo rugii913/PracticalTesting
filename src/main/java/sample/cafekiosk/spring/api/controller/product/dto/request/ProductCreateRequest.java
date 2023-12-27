@@ -22,7 +22,8 @@ public class ProductCreateRequest {
     @NotNull(message = "상품 판매상태는 필수입니다.")
     private ProductSellingStatus sellingStatus;
 
-    @NotBlank(message = "상품 이름은 필수입니다.")
+    @NotBlank(message = "상품 이름은 필수입니다.") // @NotBlank @NotEmpty @NotNull의 차이
+    // @Max(20) - 정책에 의한 검증을 어디서 할 것이냐 문제 고민 - controller에서 튕겨내는 게 적절하지 않다.
     private String name;
 
     @Positive(message = "상품 가격은 양수여야 합니다.")
