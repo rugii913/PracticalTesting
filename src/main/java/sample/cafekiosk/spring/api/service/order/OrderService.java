@@ -3,7 +3,7 @@ package sample.cafekiosk.spring.api.service.order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sample.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
+import sample.cafekiosk.spring.api.service.order.request.OrderCreateServiceRequest;
 import sample.cafekiosk.spring.api.service.order.response.OrderResponse;
 import sample.cafekiosk.spring.domain.order.Order;
 import sample.cafekiosk.spring.domain.order.OrderRepository;
@@ -33,7 +33,7 @@ public class OrderService {
     * cf. 재고 감소 -> 대표적인 동시성 연관 문제, 동시에 차감 요청이 왔을 때 어떻게 처리할 것인가?
     * - 보통 optimistic lock / pessimistic lock / ... 등 data에 대한 lock을 잡고 순차적으로 처리될 수 있게 함
     * */
-    public OrderResponse createOrder(OrderCreateRequest request, LocalDateTime registeredDateTime) {
+    public OrderResponse createOrder(OrderCreateServiceRequest request, LocalDateTime registeredDateTime) {
         List<String> productNumbers = request.getProductNumbers(); // 요청 상품 번호 목록(중복 제거되어 있지 않음)
         List<Product> products = findProductsBy(productNumbers);
 

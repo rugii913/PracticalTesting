@@ -3,7 +3,7 @@ package sample.cafekiosk.spring.api.service.product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sample.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
+import sample.cafekiosk.spring.api.service.product.request.ProductCreateServiceRequest;
 import sample.cafekiosk.spring.api.service.product.response.ProductResponse;
 import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.domain.product.ProductRepository;
@@ -36,7 +36,7 @@ public class ProductService {
     // 원래는 동시성 이슈 고려해야되는 부분임
     // - ex1. 동시 접근 확률이 낮은 경우 DB에서 unique index로 걸고, 충돌할 경우 재시도하게 만들기
     // - ex2. 아예 정책을 변경해서 상품 번호를 UUID로 사용
-    public ProductResponse createProduct(ProductCreateRequest request) {
+    public ProductResponse createProduct(ProductCreateServiceRequest request) {
         // productNumber 부여
         // DB에서 마지막 저장된 Product의 상품 번호를 읽어와서 + 1 (ex.)009 → 010
         String nextProductNumber = createNextProductNumber();

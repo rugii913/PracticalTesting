@@ -19,8 +19,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/api/v1/orders/new")
-    public ApiResponse<OrderResponse> createOrder(@Valid @RequestBody OrderCreateRequest request) { // @Valid가 빠지면, DTO에 어노테이션 있고 예외 처리 클래스 있어도 검증 안 됨 
+    public ApiResponse<OrderResponse> createOrder(@Valid @RequestBody OrderCreateRequest request) { // @Valid가 빠지면, DTO에 어노테이션 있고 예외 처리 클래스 있어도 검증 안 됨
         LocalDateTime registeredDateTime = LocalDateTime.now();
-        return ApiResponse.ok(orderService.createOrder(request, registeredDateTime));
+        return ApiResponse.ok(orderService.createOrder(request.toServiceRequest(), registeredDateTime));
     }
 }
