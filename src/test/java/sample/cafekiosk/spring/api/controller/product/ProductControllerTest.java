@@ -8,20 +8,23 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import sample.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import sample.cafekiosk.spring.api.service.product.ProductService;
 import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.domain.product.ProductType;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ProductController.class)
 public class ProductControllerTest {
+    // cf. 아래의 JPA 관련 에러 발생할 경우 - app 메인의 @EnableJpaAuditing 어노테이션 때문임 → config 분리해주면 된다.
+    // org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jpaAuditingHandler':
+    // Cannot resolve reference to bean 'jpaMappingContext' while setting constructor argument;
+    // nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jpaMappingContext':
+    // Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: JPA metamodel must not be empty!
 
     @Autowired
     private MockMvc mockMvc;
@@ -59,9 +62,103 @@ public class ProductControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("신규 상품을 등록할 때 상품 타입은 필수값이다.")
+    @Test
+    void createProductWithoutType() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .sellingStatus(ProductSellingStatus.SELLING)
+                .name("아메리카노")
+                .price(4000)
+                .build();
+
+        // when & then
+        mockMvc.perform(
+                        post("/api/v1/products/new")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("상품 타입은 필수입니다."))
+                .andExpect(jsonPath("$.data").isEmpty());
+        // 위에서 status(), jsonPath()는 MockMvcResultMatcher의 static 메서드들
+        // jsonPath()를 이용해서 응답으로 내려온 객체를 검증할 수 있다. - cf. JsonPath 라이브러리 참고: https://github.com/json-path/JsonPath
+    }
+
+    @DisplayName("신규 상품을 등록할 때 상품 판매상태는 필수값이다.")
+    @Test
+    void createProductWithoutSellingStatus() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .type(ProductType.HANDMADE)
+                .name("아메리카노")
+                .price(4000)
+                .build();
+
+        // when & then
+        mockMvc.perform(
+                        post("/api/v1/products/new")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("상품 판매상태는 필수입니다."))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("신규 상품을 등록할 때 상품 이름은 필수값이다.")
+    @Test
+    void createProductWithoutName() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .type(ProductType.HANDMADE)
+                .sellingStatus(ProductSellingStatus.SELLING)
+                .price(4000)
+                .build();
+
+        // when & then
+        mockMvc.perform(
+                        post("/api/v1/products/new")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("상품 이름은 필수입니다."))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @DisplayName("신규 상품을 등록할 때 상품 가격은 양수이다.")
+    @Test
+    void createProductWithZeroPrice() throws Exception {
+        // given
+        ProductCreateRequest request = ProductCreateRequest.builder()
+                .type(ProductType.HANDMADE)
+                .sellingStatus(ProductSellingStatus.SELLING)
+                .name("아메리카노")
+                .price(0)
+                .build();
+
+        // when & then
+        mockMvc.perform(
+                        post("/api/v1/products/new")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.httpStatus").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("상품 가격은 양수여야 합니다."))
+                .andExpect(jsonPath("$.data").isEmpty());
+    }
 }
-// cf. 아래의 JPA 관련 에러 발생할 경우 - app 메인의 @EnableJpaAuditing 어노테이션 때문임 → config 분리해주면 된다.
-// org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jpaAuditingHandler':
-// Cannot resolve reference to bean 'jpaMappingContext' while setting constructor argument;
-// nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jpaMappingContext':
-// Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: JPA metamodel must not be empty!
