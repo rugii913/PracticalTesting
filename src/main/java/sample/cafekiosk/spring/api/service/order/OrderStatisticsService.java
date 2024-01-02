@@ -17,7 +17,7 @@ public class OrderStatisticsService {
     private final OrderRepository orderRepository;
     private final MailService mailService;
 
-    public void sendOrderStatisticsMail(LocalDate orderDate, String email) {
+    public boolean sendOrderStatisticsMail(LocalDate orderDate, String email) {
         // cf. 주문 등록 일시와 결제 일시는 실제로는 다르지만 편의상 여기서는 같은 것으로 보겠음
         // 해당 일자에 결제 완료된 주문들을 가져와서
         List<Order> orders = orderRepository.findOrdersBy(
@@ -41,5 +41,7 @@ public class OrderStatisticsService {
         if (!result) {
             throw new IllegalArgumentException("매출 통꼐 메일 전송에 실패했습니다.");
         }
+
+        return true;
     }
 }

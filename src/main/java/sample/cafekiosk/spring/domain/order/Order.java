@@ -1,6 +1,7 @@
 package sample.cafekiosk.spring.domain.order;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sample.cafekiosk.spring.domain.BaseEntity;
@@ -38,8 +39,9 @@ public class Order extends BaseEntity {
     // 실제 쿼리 가는 것을 보면 order_product에도 insert 쿼리가 날아가는 것을 확인할 수 있음
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
-    public Order(List<Product> products, LocalDateTime registeredDateTime) {
-        this.orderStatus = OrderStatus.INIT;
+    @Builder
+    private Order(List<Product> products, OrderStatus orderStatus, LocalDateTime registeredDateTime) {
+        this.orderStatus = orderStatus;
         this.totalPrice = calculateTotalPrice(products);
         this.registeredDateTime = registeredDateTime;
         this.orderProducts = products.stream()
@@ -48,7 +50,11 @@ public class Order extends BaseEntity {
     }
 
     public static Order create(List<Product> products, LocalDateTime registeredDateTime) { // static 메서드, 밖에서 생성할 때는 생성자 대신 이 static 메서드를 사용
-        return new Order(products, registeredDateTime);
+        return Order.builder()
+                .orderStatus(OrderStatus.INIT)
+                .products(products)
+                .registeredDateTime(registeredDateTime)
+                .build();
     }
 
     private int calculateTotalPrice(List<Product> products) {
