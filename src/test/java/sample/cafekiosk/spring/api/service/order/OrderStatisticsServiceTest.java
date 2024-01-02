@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import sample.cafekiosk.spring.client.mail.MailSendClient;
 import sample.cafekiosk.spring.domain.history.mail.MailSendHistory;
 import sample.cafekiosk.spring.domain.history.mail.MailSendHistoryRepository;
 import sample.cafekiosk.spring.domain.order.Order;
@@ -20,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static sample.cafekiosk.spring.domain.product.ProductSellingStatus.SELLING;
 
 @SpringBootTest
@@ -44,6 +48,11 @@ class OrderStatisticsServiceTest {
     @Autowired
     private MailSendHistoryRepository mailSendHistoryRepository;
 
+
+    @MockBean // @Component로 스프링 빈으로 등록되어 있는 MailSendClient를 mocking
+    private MailSendClient mailSendClient;
+    // 기본적으로 mock는 가짜 객체를 넣어놓고, 이 가짜 객체가 어떻게 행동했으면 하는지(어떤 요청에 대해 어떤 결과)를 지정 가능
+
     @AfterEach
     void tearDown() {
         orderProductRepository.deleteAllInBatch(); // orderProductRepository를 가장 먼저 지워줘야 함, 이유는 나중에 설명
@@ -59,8 +68,8 @@ class OrderStatisticsServiceTest {
         LocalDateTime now = LocalDateTime.of(2023, 3, 5, 0, 0);
 
         Product product1 = createProduct(ProductType.HANDMADE, "001", 1000);
-        Product product2 = createProduct(ProductType.HANDMADE, "002", 3000);
-        Product product3 = createProduct(ProductType.HANDMADE, "003", 5000);
+        Product product2 = createProduct(ProductType.HANDMADE, "002", 2000);
+        Product product3 = createProduct(ProductType.HANDMADE, "003", 3000);
         List<Product> products = List.of(product1, product2, product3);
         productRepository.saveAll(products);
 
@@ -69,6 +78,11 @@ class OrderStatisticsServiceTest {
         Order order2 = createPaymentCompletedOrder(now, products);
         Order order3 = createPaymentCompletedOrder(LocalDateTime.of(2023, 3, 5, 23, 59, 59), products);
         Order order4 = createPaymentCompletedOrder(LocalDateTime.of(2023, 3, 6, 0, 0, 0), products);
+
+        // stubbing
+        // Mockito.when() static import + org.mockito.ArgumentMatchers.any 사용
+        when(mailSendClient.sendEmail(any(String.class), any(String.class), any(String.class), any(String.class)))
+                .thenReturn(true); // mock 객체의 행위를 지정한 것
 
         // when
         boolean result = orderStatisticsService
