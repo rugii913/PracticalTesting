@@ -19,8 +19,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
 
-    @Spy
-    /*@Mock*/
+    // @Spy
+    @Mock
     private MailSendClient mailSendClient;
 
     @Mock
@@ -40,15 +40,15 @@ class MailServiceTest {
 
         // MailService mailService = new MailService(mailSendClient, mailSendHistoryRepository);
 
-        /*when(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(true);*/
+        when(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(true); // BDD 상으로는 given인데, 호출하는 함수는 when이라서 뭔가 어색하다
         
         // @Spy - mocking 대상 메서드 중 일부 기능만 바꾸고 나머지는 그대로 살리고 싶은 경우
         // → 한 객체가 여러 기능이 있는데, 한 기능만 stubbing 하고 싶은 경우
         // @Spy는 stubbing이 되지 않으므로 when()을 사용할 수 없다. → do~ 메서드들 사용
-        doReturn(true)
+        /*doReturn(true)
                 .when(mailSendClient)
-                .sendEmail(anyString(), anyString(), anyString(), anyString());
+                .sendEmail(anyString(), anyString(), anyString(), anyString());*/
 
         // when
         boolean result = mailService.sendMail("", "", "", "");
