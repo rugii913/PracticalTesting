@@ -3,9 +3,10 @@ package sample.cafekiosk.spring.api.service.mail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sample.cafekiosk.spring.client.mail.MailSendClient;
 import sample.cafekiosk.spring.domain.history.mail.MailSendHistory;
@@ -14,7 +15,8 @@ import sample.cafekiosk.spring.domain.history.mail.MailSendHistoryRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
@@ -40,8 +42,8 @@ class MailServiceTest {
 
         // MailService mailService = new MailService(mailSendClient, mailSendHistoryRepository);
 
-        when(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(true); // BDD 상으로는 given인데, 호출하는 함수는 when이라서 뭔가 어색하다
+        /*Mockito.when(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(true); // BDD 상으로는 given인데, 호출하는 함수는 when이라서 뭔가 어색하다*/
         
         // @Spy - mocking 대상 메서드 중 일부 기능만 바꾸고 나머지는 그대로 살리고 싶은 경우
         // → 한 객체가 여러 기능이 있는데, 한 기능만 stubbing 하고 싶은 경우
@@ -49,6 +51,8 @@ class MailServiceTest {
         /*doReturn(true)
                 .when(mailSendClient)
                 .sendEmail(anyString(), anyString(), anyString(), anyString());*/
+        BDDMockito.given(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
+                .willReturn(true);
 
         // when
         boolean result = mailService.sendMail("", "", "", "");
